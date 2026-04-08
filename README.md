@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# autoEDOS
-=======
 # autoEDOS
 
 This repository contains two main applications for automated Experimental Design and Optimization (EDOS).
@@ -8,7 +5,7 @@ This repository contains two main applications for automated Experimental Design
 ## Applications
 
 ### [autoEDOS](./autoEDOS)
-The core autoEDOS application featuring Design of Experiments (DoE), Bayesian Optimization (BO), and Sensitivity Analysis (SA) modules. It facilitates closed-loop experimental automation.
+The core autoEDOS application featuring Design of Experiments (DoE), Bayesian Optimization (BO), and Statistical Analysis (SA) modules. It facilitates closed-loop experimental automation.
 
 ### [autoEDOS-IMEX](./autoEDOS-IMEX)
 The IMport-EXport utility designed to assist with data transfer between different experimental stages or external systems.
@@ -16,4 +13,3 @@ The IMport-EXport utility designed to assist with data transfer between differen
 ## Getting Started
 
 Refer to the individual application directories for specific installation and usage instructions.
->>>>>>> 4cb460e (Initial commit: Combined autoEDOS and autoEDOS-IMEX applications)
