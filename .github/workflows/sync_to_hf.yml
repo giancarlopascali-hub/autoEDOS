@@ -15,16 +15,15 @@ jobs:
         run: |
           git config --global user.email "g.pascali@unsw.edu.au"
           git config --global user.name "Giancarlo Pascali"
-          # Clone the HF repo (just the metadata to start)
+          # Clone the HF repo
           git clone https://realgcp:$HF_TOKEN@huggingface.co/spaces/realgcp/autoEDOS hf_repo
-          # Clean the HF repo except the .git folder
-          find hf_repo -maxdepth 1 -not -name 'hf_repo' -not -name '.git' -exec rm -rf {} +
-          # Copy autoEDOS contents (excluding dist) to the HF repo
-          cp -rv autoEDOS/* hf_repo/
-          rm -rf hf_repo/dist
+          # Sync autoEDOS folder to hf_repo root, EXCLUDING the heavy 'dist' folder
+          # -a: archive mode, -v: verbose, --delete: delete files in hf_repo that are not in autoEDOS
+          rsync -av --delete --exclude='dist' autoEDOS/ hf_repo/
           # Commit and push
           cd hf_repo
           git add .
           git commit -m "Sync from GitHub (excluding dist artifacts)" || echo "No changes to commit"
           git push origin main
+
 
