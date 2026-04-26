@@ -6,9 +6,11 @@ jobs:
   sync-to-hub:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          lfs: true
+
       - name: Push to HF
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -17,17 +19,28 @@ jobs:
           git config --global user.name "Giancarlo Pascali"
           # Clone the HF repo
           git clone https://realgcp:$HF_TOKEN@huggingface.co/spaces/realgcp/autoEDOS hf_repo
-          # Sync autoEDOS folder to hf_repo root
-          # We exclude .git, dist/ (heavy build files), and edboplus (heavy tutorial/bench files)
-          rsync -av --delete --exclude='.git' --exclude='dist' --exclude='edboplus' autoEDOS/ hf_repo/
+          
+          # Sync ONLY the absolute essentials to hf_repo root
+          # We exclude EVERYTHING and then include only what is needed.
+          # More simply, we exclude all known heavy/unnecessary folders and file patterns.
+          rsync -av --delete \
+            --exclude='.git' \
+            --exclude='dist' \
+            --exclude='edboplus' \
+            --exclude='archive' \
+            --exclude='Model functions' \
+            --exclude='*.md' \
+            --exclude='*.pdf' \
+            --exclude='*.xlsx' \
+            --exclude='*.ico' \
+            --exclude='benchmark_*.py' \
+            --exclude='generate_*.py' \
+            --exclude='finalize_benchmark.py' \
+            --exclude='static/banner.png' \
+            autoEDOS/ hf_repo/
+          
           # Commit and push
           cd hf_repo
-          # Handle potential LFS pointer issues in CI by allowing incomplete pushes
-          git config lfs.allowincompletepush true
           git add .
-          git commit -m "Sync from GitHub (optimized sync v3)" || echo "No changes to commit"
+          git commit -m "Sync from GitHub (Bare Essentials Only)" || echo "No changes to commit"
           git push origin main
-
-
-
-
