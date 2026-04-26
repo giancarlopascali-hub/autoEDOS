@@ -18,14 +18,16 @@ jobs:
           # Clone the HF repo
           git clone https://realgcp:$HF_TOKEN@huggingface.co/spaces/realgcp/autoEDOS hf_repo
           # Sync autoEDOS folder to hf_repo root
-          # IMPORTANT: We must exclude .git to keep the hf_repo's git metadata intact
-          # We also exclude dist/ as it's too heavy and not needed for Docker
-          rsync -av --delete --exclude='.git' --exclude='dist' autoEDOS/ hf_repo/
+          # We exclude .git, dist/ (heavy build files), and edboplus (heavy tutorial/bench files)
+          rsync -av --delete --exclude='.git' --exclude='dist' --exclude='edboplus' autoEDOS/ hf_repo/
           # Commit and push
           cd hf_repo
+          # Handle potential LFS pointer issues in CI by allowing incomplete pushes
+          git config lfs.allowincompletepush true
           git add .
-          git commit -m "Sync from GitHub (optimized sync)" || echo "No changes to commit"
+          git commit -m "Sync from GitHub (optimized sync v3)" || echo "No changes to commit"
           git push origin main
+
 
 
 
