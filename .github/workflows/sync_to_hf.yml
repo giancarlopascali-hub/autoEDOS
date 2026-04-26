@@ -13,17 +13,19 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git config --global user.email "g.pascali@unsw.edu.au"
+          git config --global user.email "giancarlo.pascali@gmail.com"
           git config --global user.name "Giancarlo Pascali"
           # Clone the HF repo
           git clone https://realgcp:$HF_TOKEN@huggingface.co/spaces/realgcp/autoEDOS hf_repo
-          # Sync autoEDOS folder to hf_repo root, EXCLUDING the heavy 'dist' folder
-          # -a: archive mode, -v: verbose, --delete: delete files in hf_repo that are not in autoEDOS
-          rsync -av --delete --exclude='dist' autoEDOS/ hf_repo/
+          # Sync autoEDOS folder to hf_repo root
+          # IMPORTANT: We must exclude .git to keep the hf_repo's git metadata intact
+          # We also exclude dist/ as it's too heavy and not needed for Docker
+          rsync -av --delete --exclude='.git' --exclude='dist' autoEDOS/ hf_repo/
           # Commit and push
           cd hf_repo
           git add .
-          git commit -m "Sync from GitHub (excluding dist artifacts)" || echo "No changes to commit"
+          git commit -m "Sync from GitHub (optimized sync)" || echo "No changes to commit"
           git push origin main
+
 
 
