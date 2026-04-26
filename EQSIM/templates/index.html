@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EQSIM | Equipment Simulator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>EQSIM</h1>
+            <p class="subtitle">Autonomous Equipment Folder Monitor & File Simulator</p>
+        </header>
+
+        <main class="glass-card">
+            <div class="config-grid">
+                <div class="input-group">
+                    <label for="folder_a">Watch Folder A (New Files)</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="folder_a" placeholder="C:\path\to\folder_a">
+                        <button class="browse-btn" onclick="browseFolder('folder_a')" title="Browse Folder">📂</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="folder_b">Destination Folder B</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="folder_b" placeholder="C:\path\to\folder_b">
+                        <button class="browse-btn" onclick="browseFolder('folder_b')" title="Browse Folder">📂</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="folder_c">Watch Folder C (Feedback Source)</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="folder_c" placeholder="C:\path\to\folder_c">
+                        <button class="browse-btn" onclick="browseFolder('folder_c')" title="Browse Folder">📂</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="folder_d">Destination Folder D</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="folder_d" placeholder="C:\path\to\folder_d">
+                        <button class="browse-btn" onclick="browseFolder('folder_d')" title="Browse Folder">📂</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="tag">Processing Tag</label>
+                    <input type="text" id="tag" placeholder="USED_">
+                </div>
+                <div class="input-group">
+                    <label for="delay">Sim Delay (Seconds)</label>
+                    <input type="number" id="delay" step="0.1" value="1.0">
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end;">
+                <button class="save-btn" onclick="saveConfig()">Apply Configuration</button>
+            </div>
+        </main>
+
+        <div class="controls">
+            <div class="status-badge">
+                <div id="status-dot" class="dot"></div>
+                <span id="status-text">DEACTIVATED</span>
+            </div>
+            <button id="toggle-btn" class="btn-toggle inactive" onclick="toggleApp()">Activate</button>
+        </div>
+
+        <section class="glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="font-size: 0.9rem; color: var(--text-secondary); text-transform: uppercase;">Operation Logs</h3>
+                <span id="last-updated" style="font-size: 0.7rem; color: var(--text-secondary);"></span>
+            </div>
+            <div id="logs" class="logs-container">
+                <!-- Logs will appear here -->
+            </div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

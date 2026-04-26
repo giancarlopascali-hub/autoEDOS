@@ -235,6 +235,17 @@ def optimize():
 
         # Use float32 (Single Precision) for universal GPU support (Intel/AMD/NVIDIA)
         train_x = torch.tensor(np.stack(train_x_list, axis=1), dtype=torch.float32).to(DEVICE)
+        
+        # Fix for constant features (zero-width bounds) to avoid division by zero in Normalize/Standardize
+        # Using the original EDOS logic: high = low + abs(low)*0.01 + 0.1 for numerical stability
+        for i in range(len(bounds)):
+            low, high = bounds[i]
+            if low == high:
+                if features_config[i]['type'] == 'categorical':
+                    bounds[i][1] = low + 0.1
+                else:
+                    bounds[i][1] = low + abs(low) * 0.01 + 0.1
+                
         bounds_t = torch.tensor(bounds, dtype=torch.float32).T.to(DEVICE)
         
         # 2. Prepare Objectives (Y)

@@ -1,0 +1,19 @@
+name: Sync to Hugging Face
+on:
+  push:
+    branches: [main]
+jobs:
+  sync-to-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Push to HF
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          git config --global user.email "g.pascali@unsw.edu.au"
+          git config --global user.name "Giancarlo Pascali"
+          # Push only the 'autoEDOS' subdirectory to the root of the HF Space
+          git subtree push --prefix autoEDOS https://realgcp:$HF_TOKEN@huggingface.co/spaces/realgcp/autoEDOS main

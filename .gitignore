@@ -33,4 +33,5 @@ Thumbs.db
 # Project specific
 *.spec
 *.log
+scratch/
 .git/
