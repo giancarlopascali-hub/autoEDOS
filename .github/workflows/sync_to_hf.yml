@@ -20,9 +20,8 @@ jobs:
           # Clone the HF repo
           git clone https://realgcp:$HF_TOKEN@huggingface.co/spaces/realgcp/autoEDOS hf_repo
           
-          # Sync ONLY the absolute essentials to hf_repo root
-          # We exclude EVERYTHING and then include only what is needed.
-          # More simply, we exclude all known heavy/unnecessary folders and file patterns.
+          # Sync essentials + UI assets (logo, banner)
+          # We now INCLUDE .ico and .png by removing them from the exclude list
           rsync -av --delete \
             --exclude='.git' \
             --exclude='dist' \
@@ -31,13 +30,11 @@ jobs:
             --exclude='Model functions' \
             --exclude='*.md' \
             --exclude='*.pdf' \
-            --exclude='*.xlsx' \
-            --exclude='*.ico' \
             --exclude='benchmark_*.py' \
             --exclude='generate_*.py' \
             --exclude='finalize_benchmark.py' \
-            --exclude='static/banner.png' \
             autoEDOS/ hf_repo/
+
           
           # Commit and push
           cd hf_repo
