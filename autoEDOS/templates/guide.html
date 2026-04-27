@@ -206,9 +206,24 @@
                 </li>
                 <li><b>Estimator Tool:</b> Use the sliders at the bottom to predict What-If scenarios. The tool gives you a predicted value and a "Success Score" based on your defined targets.</li>
             </ul>
+        <section class="guide-section" id="data">
+            <h2>4. Data Management <span class="badge">TIPS</span></h2>
+            <p>EDOS is designed to be flexible with your data, but following these best practices will ensure the best results.</p>
+            
+            <h3>Working with CSV Files</h3>
+            <ul>
+                <li><b>Formatting:</b> Use standard CSV files. The app will automatically detect your columns.</li>
+                <li><b>Categorical Data:</b> You can use text names for catalysts, solvents, or ligands. The AI handles these using advanced encoding.</li>
+                <li><b>Missing Values:</b> If you haven't performed an experiment yet, leave the objective cell empty or use "N/D". The app will ignore these rows during training.</li>
+                <li><b>Editing:</b> You can edit values directly in the app's main table. Click any cell, type the new value, and click away to save.</li>
+            </ul>
+
+            <h3>Data Privacy</h3>
+            <p>All data processing happens locally on your machine or within your private Space. Your experimental data is never used to train global models or shared with third parties.</p>
         </section>
 
         <footer style="margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border-color); text-align: center;">
+
             <p>© 2026 EDOS | Developed by Giancarlo Pascali</p>
         </footer>
     </div>
