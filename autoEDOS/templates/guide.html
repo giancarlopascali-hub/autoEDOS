@@ -183,14 +183,74 @@
 
             <section class="guide-section" id="auto-mode">
                 <h2>Automation Mode <span class="badge">ADVANCED</span></h2>
-                <p>The <strong>Auto module</strong> is designed for fully automated laboratory pipelines connected to the <strong>autoEDOS-IMEX</strong> software. In this mode, experiment proposals are automatically sent to your instrument, and results are received and fed back into the next BO cycle without manual intervention.</p>
+
+                <div class="info-box" style="margin-bottom: 1.5rem;">
+                    <strong>What is autoEDOS-IMEX?</strong><br><br>
+                    autoEDOS-IMEX (Instrument Management and EXchange) is a companion software that runs on the local laboratory computer and acts as a bridge between autoEDOS and your physical instruments. It:<br><br>
+                    <ul style="margin: 0.5rem 0 0;">
+                        <li>Receives the experiment proposal (the suggested conditions table) from autoEDOS and translates it into instrument-readable commands.</li>
+                        <li>Queues and dispatches the experiment sequence to the connected instrument(s) — e.g. a flow chemistry platform, a robotic liquid handler, or any IMEX-compatible system.</li>
+                        <li>Monitors the run in real time, collects the raw output data, and formats it as results.</li>
+                        <li>Pushes the results back to autoEDOS automatically, triggering the next optimization cycle — all without manual file handling.</li>
+                    </ul>
+                    <br>In short: IMEX is what makes the loop <em>fully closed</em>. Without it, you manage experiment dispatch and result upload manually. With it, the entire DoE → Run → Optimize cycle runs hands-free.
+                </div>
+
+                <h3>Path A — Starting from DoE</h3>
+                <p>Use this path when you have no prior data and want to generate a statistically designed initial experiment set automatically.</p>
                 <ol class="step-list">
-                    <li><span class="step-title">Start autoEDOS-IMEX</span> Run the IMEX software on the local laboratory computer. Confirm the checkbox in Step 1 of the Auto module.</li>
-                    <li><span class="step-title">Choose a starting method</span> Select DoE (if starting fresh) or BO (if you have existing data). This will take you to the relevant module to configure parameters.</li>
-                    <li><span class="step-title">Configure BO setup</span> Return to Auto and confirm BO is configured. Click <em>Check BO Setup</em>.</li>
-                    <li><span class="step-title">Set stopping conditions</span> Define when the loop should stop: after a fixed number of iterations, after X iterations with no improvement, when a target value is reached (only available if all objectives are in "target" mode), or after a set time.</li>
-                    <li><span class="step-title">Launch</span> Click <em>Start Automated BO</em>. The platform will run the full cycle autonomously.</li>
+                    <li>
+                        <span class="step-title">Start autoEDOS-IMEX &amp; confirm (Step 1)</span>
+                        Run the IMEX software on your lab computer. Check the confirmation box in Step 1 of the Auto module.
+                    </li>
+                    <li>
+                        <span class="step-title">Select "Start from DoE" (Step 2)</span>
+                        Click <em>Start from DoE</em>. You will be taken to the DoE module. Define your features, objectives, and design model, then click <em>Create table of experiments</em>.
+                    </li>
+                    <li>
+                        <span class="step-title">Return to Auto and perform the Auto DoE</span>
+                        Click <em>Back to Auto Setup</em>. A button labeled <strong>Perform Auto DoE</strong> will appear. Clicking it sends the DoE experiment table to autoEDOS-IMEX, which dispatches the experiments to your instrument. The app waits for the results to return automatically.
+                    </li>
+                    <li>
+                        <span class="step-title">Results received — configure BO (Step 3)</span>
+                        Once IMEX delivers the experimental results, they are automatically loaded into the dataset. You are prompted to check the BO setup. Click <em>Check BO Setup</em> to go to the BO module and confirm your objectives, features, and tweaks are correct.
+                    </li>
+                    <li>
+                        <span class="step-title">Set stopping conditions (Step 4) &amp; launch</span>
+                        Return to Auto. Set your stopping condition (iterations, no improvement, target, or time), then click <strong>Start Automated BO</strong>. The BO loop runs fully autonomously from this point.
+                    </li>
                 </ol>
+
+                <h3>Path B — Starting from BO</h3>
+                <p>Use this path when you already have experimental data (e.g. from a previous DoE) and want to go directly into the optimization cycle.</p>
+                <ol class="step-list">
+                    <li>
+                        <span class="step-title">Start autoEDOS-IMEX &amp; confirm (Step 1)</span>
+                        Run the IMEX software on your lab computer. Check the confirmation box in Step 1.
+                    </li>
+                    <li>
+                        <span class="step-title">Select "Start from BO" (Step 2)</span>
+                        Click <em>Start from BO</em>. You will be taken to the BO module. Upload your existing data CSV and configure all features, objectives, and tweaks.
+                    </li>
+                    <li>
+                        <span class="step-title">Confirm BO setup (Step 3)</span>
+                        Click <em>Back to Auto Setup</em>, then <em>Check BO Setup</em> to mark this step complete.
+                    </li>
+                    <li>
+                        <span class="step-title">Set stopping conditions (Step 4) &amp; launch</span>
+                        Set your preferred stopping condition, then click <strong>Start Automated BO</strong>. Each cycle, IMEX receives the new proposals, runs them on the instrument, and returns results to trigger the next iteration — all automatically.
+                    </li>
+                </ol>
+
+                <div class="info-box warn">
+                    <strong>Stopping Conditions:</strong>
+                    <ul style="margin: 0.5rem 0 0;">
+                        <li><strong>Number of iterations:</strong> Stop after N complete BO cycles.</li>
+                        <li><strong>Best conditions not improved for X iterations:</strong> Stop if the best result found hasn't improved over the last X cycles — useful for convergence detection.</li>
+                        <li><strong>% Target reached:</strong> Only active when <em>all</em> objectives are set to "target" mode. Stops when the target threshold is met.</li>
+                        <li><strong>Time:</strong> Stop after a maximum elapsed time (hh:mm).</li>
+                    </ul>
+                </div>
             </section>
         </div>
 
