@@ -9,244 +9,351 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { padding: 0; background: var(--bg-color); }
-        .guide-container { max-width: 900px; margin: 0 auto; padding: 2rem; }
-        .search-header { position: sticky; top: 0; background: rgba(248, 250, 252, 0.9); backdrop-filter: blur(12px); padding: 1.5rem 0; z-index: 100; border-bottom: 1px solid var(--border-color); margin-bottom: 2rem; }
-        .search-input { width: 100%; padding: 1rem 1.5rem; border-radius: 12px; border: 2px solid var(--border-color); background: var(--card-bg); font-size: 1.1rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
-        .guide-section { margin-bottom: 4rem; scroll-margin-top: 100px; }
+        .guide-container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+        .search-header { position: sticky; top: 0; background: rgba(248,250,252,0.95); backdrop-filter: blur(12px); padding: 1rem 0 0; z-index: 100; border-bottom: 1px solid var(--border-color); margin-bottom: 2rem; }
+        .search-input { width: 100%; padding: 0.85rem 1.5rem; border-radius: 12px; border: 2px solid var(--border-color); background: var(--card-bg); font-size: 1rem; }
+        .part-tabs { display: flex; gap: 0.5rem; margin-bottom: 0; padding: 0.4rem; background: #f1f5f9; border-radius: 12px; }
+        .part-tab { flex: 1; padding: 0.65rem 1rem; border: none; border-radius: 8px; background: transparent; font-family: inherit; font-weight: 600; font-size: 0.95rem; color: #64748b; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .part-tab.active { background: var(--accent-color); color: white; }
+        .part-view { display: none; }
+        .part-view.active { display: block; }
+        .guide-section { margin-bottom: 3.5rem; scroll-margin-top: 140px; }
         .guide-section.hidden { display: none; }
-        h2 { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; color: var(--text-primary); font-size: 1.8rem; border-bottom: 2px solid var(--accent-glow); padding-bottom: 0.5rem; }
-        h3 { margin: 1.5rem 0 1rem; color: var(--accent-color); font-size: 1.3rem; }
-        .badge { font-size: 0.8rem; background: var(--accent-glow); color: var(--accent-color); padding: 4px 12px; border-radius: 20px; font-weight: 600; }
-        p, li { color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.7; }
-        ol li { margin-bottom: 1.5rem; }
+        h2 { display: flex; align-items: center; gap: 10px; margin-bottom: 1.2rem; color: var(--text-primary); font-size: 1.7rem; border-bottom: 2px solid var(--accent-glow); padding-bottom: 0.5rem; }
+        h3 { margin: 1.4rem 0 0.8rem; color: var(--accent-color); font-size: 1.2rem; }
+        .badge { font-size: 0.78rem; background: var(--accent-glow); color: var(--accent-color); padding: 3px 10px; border-radius: 20px; font-weight: 600; white-space: nowrap; }
+        p, li { color: var(--text-secondary); margin-bottom: 0.8rem; line-height: 1.7; }
+        ol li, ul li { margin-bottom: 1.2rem; }
         .step-title { font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 0.3rem; }
-        .info-box { background: var(--accent-glow); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--accent-color); margin: 1.5rem 0; }
-        .highlight { background-color: #fef08a; padding: 0 2px; }
-        .back-to-top { position: fixed; bottom: 2rem; right: 2rem; background: var(--accent-color); color: white; width: 45px; height: 45px; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: none; font-weight: bold; }
-        nav.toc { background: var(--card-bg); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 3rem; }
-        nav.toc ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
-        nav.toc a { text-decoration: none; color: var(--accent-color); font-weight: 500; }
+        .info-box { background: var(--accent-glow); padding: 1.2rem 1.5rem; border-radius: 12px; border-left: 4px solid var(--accent-color); margin: 1.2rem 0; }
+        .info-box.tip { background: #f0fdf4; border-color: #10b981; }
+        .info-box.warn { background: #fffbeb; border-color: #f59e0b; }
+        .back-to-top { position: fixed; bottom: 2rem; right: 2rem; background: var(--accent-color); color: white; width: 45px; height: 45px; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: none; font-weight: bold; font-size: 1.2rem; }
+        nav.toc { background: var(--card-bg); padding: 1.2rem 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 2.5rem; }
+        nav.toc ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; }
+        nav.toc a { text-decoration: none; color: var(--accent-color); font-weight: 500; font-size: 0.95rem; }
         nav.toc a:hover { text-decoration: underline; }
+        .workflow-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .wf-card { background: var(--card-bg); border: 2px solid var(--border-color); border-radius: 16px; padding: 1.5rem; text-align: center; position: relative; }
+        .wf-card.accent-card { border-color: var(--accent-color); }
+        .wf-num { width: 36px; height: 36px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; margin: 0 auto 1rem; font-size: 1rem; }
+        .step-list { counter-reset: steps; list-style: none; padding: 0; }
+        .step-list > li { counter-increment: steps; padding: 1.2rem 1.2rem 1.2rem 3.5rem; position: relative; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 1rem; }
+        .step-list > li::before { content: counter(steps); position: absolute; left: 1rem; top: 1.2rem; width: 28px; height: 28px; background: var(--accent-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; line-height: 28px; text-align: center; }
+        .process-arrow { text-align: center; font-size: 1.8rem; color: var(--accent-color); margin: 0.3rem 0; opacity: 0.5; }
     </style>
 </head>
 <body>
     <div class="search-header">
         <div class="guide-container">
-            <input type="text" id="guide-search" class="search-input" placeholder="Search for instructions, modules, or features...">
+            <input type="text" id="guide-search" class="search-input" placeholder="Search the guide...">
+            <div class="part-tabs" style="margin-top: 0.75rem;">
+                <button class="part-tab active" data-part="process">Part 1 — Running the Optimization</button>
+                <button class="part-tab" data-part="reference">Part 2 — Module Reference</button>
+            </div>
         </div>
     </div>
 
     <div class="guide-container">
-        <header style="margin-bottom: 2rem;">
-            <h1 style="font-size: 2.8rem; margin-bottom: 0.5rem; color: var(--text-primary);">EDOS Quick Guide</h1>
-            <p style="font-size: 1.2rem;">Complete Step-by-Step Instructions</p>
-        </header>
+        <!-- ========== PART 1: PROCESS WALKTHROUGH ========== -->
+        <div id="part-process" class="part-view active">
+            <header style="margin-bottom: 2rem;">
+                <h1 style="font-size: 2.5rem; margin-bottom: 0.4rem; color: var(--text-primary);">Running the Optimization</h1>
+                <p style="font-size: 1.1rem;">A step-by-step walkthrough of the autoEDOS workflow — from your first experiment to a fully optimized result.</p>
+            </header>
 
-        <section class="guide-section" id="intro">
-            <h2>Optimal Workflow Overview <span class="badge">START HERE</span></h2>
-            <p>The optimal scientific workflow in EDOS relies on three main stages:</p>
-            
-            <div class="workflow-graphic" style="display: flex; justify-content: space-between; align-items: stretch; margin: 3rem 0; gap: 20px; text-align: center;">
-                <div style="flex: 1; background: var(--card-bg); padding: 2rem 1.5rem; border-radius: 12px; border: 2px solid var(--accent-color); position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <div style="width: 40px; height: 40px; background: var(--accent-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; position: absolute; top: -20px; left: 50%; transform: translateX(-50%);">1</div>
-                    <h3 style="margin-top: 0;">DoE</h3>
-                    <p style="font-size: 0.95rem; margin-bottom: 0; color: var(--text-secondary);">Plan a robust set of initial experiments to optimally explore the parameter space</p>
-                </div>
-                <div style="display: flex; align-items: center; color: var(--accent-color); font-weight: bold; font-size: 2.5rem;">→</div>
-                <div style="flex: 1; background: var(--card-bg); padding: 2rem 1.5rem; border-radius: 12px; border: 2px solid #f59e0b; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <div style="width: 40px; height: 40px; background: #f59e0b; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; position: absolute; top: -20px; left: 50%; transform: translateX(-50%);">2</div>
-                    <div style="position: absolute; top: -15px; right: -15px; background: var(--card-bg); border-radius: 50%; padding: 4px; color: #f59e0b; display: flex; align-items: center; justify-content: center; border: 2px solid #f59e0b; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" title="Cyclical process (Repeated until targets met)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            <section class="guide-section" id="overview">
+                <h2>The Big Picture</h2>
+                <p>autoEDOS follows a closed-loop optimization strategy. Instead of testing combinations randomly (OVAT), the platform learns from every experiment and intelligently narrows in on the best conditions.</p>
+                <div class="workflow-grid">
+                    <div class="wf-card accent-card">
+                        <div class="wf-num" style="background: var(--accent-color);">1</div>
+                        <h3 style="margin-top:0;">Plan</h3>
+                        <p style="font-size: 0.9rem; margin:0;">Design a small, information-rich set of initial experiments using DoE</p>
                     </div>
-                    <h3 style="margin-top: 0; color: #f59e0b;">BO</h3>
-                    <p style="font-size: 0.95rem; margin-bottom: 0; color: var(--text-secondary);">Refine conditions and optimize towards targets over successive physical lab campaigns</p>
-                </div>
-                <div style="display: flex; align-items: center; color: #f59e0b; font-weight: bold; font-size: 2.5rem;">→</div>
-                <div style="flex: 1; background: var(--card-bg); padding: 2rem 1.5rem; border-radius: 12px; border: 2px solid #8b5cf6; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <div style="width: 40px; height: 40px; background: #8b5cf6; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; position: absolute; top: -20px; left: 50%; transform: translateX(-50%);">3</div>
-                    <h3 style="margin-top: 0; color: #8b5cf6;">SA</h3>
-                    <p style="font-size: 0.95rem; margin-bottom: 0; color: var(--text-secondary);">Review the data to uncover underlying trends, interactions, and physical insights</p>
-                </div>
-            </div>
-            <p>You should start by <b>planning a new experiment using the DoE module</b>. Once you have initial data, you can continuously <b>refine the conditions using one or several campaigns of Bayesian Optimization (BO)</b>. Finally, you can <b>review the resulting comprehensive data using the Statistical Analysis (SA) module</b> to extract physical insights and build predictive estimators.</p>
-            <p>However, the three modules—DoE, BO, and SA—can be used separately if you only have specific projects or aims.</p>
-        </section>
-
-        <nav class="toc">
-            <h4 style="margin-bottom: 1rem;">Table of Contents</h4>
-            <ul>
-                <li><a href="#doe">1. Design of Experiments (DoE)</a></li>
-                <li><a href="#bo">2. Bayesian Optimization (BO)</a></li>
-                <li><a href="#sa">3. Statistical Analysis (SA)</a></li>
-                <li><a href="#data">4. Data Management</a></li>
-            </ul>
-        </nav>
-
-        <section class="guide-section" id="doe">
-            <h2>1. Design of Experiments (DoE) <span class="badge">PLANNING</span></h2>
-            <p>Use this module when starting from scratch to create a statistically sound plan for your first experiments.</p>
-            
-            <h3>Step-by-Step Instructions</h3>
-            <ol>
-                <li>
-                    <span class="step-title">Step 1: Define Features</span>
-                    Go to the <b>Features</b> tab. Add your input variables. Choose <b>Continuous</b> for smooth numeric ranges, <b>Regular</b> for fixed-step grids (e.g., `[20, 100]5` for 5 points), <b>Discrete</b> for specific values, or <b>Categorical</b> for non-numerical options (e.g., Catalyst A, B, C).
-                </li>
-                <li>
-                    <span class="step-title">Step 2: Add Objectives</span>
-                    Switch to the <b>Objectives</b> tab. Enter the names of the metrics you plan to measure (e.g., Yield, Purity, Cost).
-                </li>
-                <li>
-                    <span class="step-title">Step 3: Configure Tweaks</span>
-                    In the <b>DoE Tweaks</b> tab, choose your design model. <b>Box-Behnken</b> is great for secondary surfaces, while <b>Definitive Screening</b> is efficient for many variables. <b>Latin Hypercube Sampling (LHS)</b> generates a space-filling design that works with any number of factors — ideal when you want maximum coverage of the parameter space with a free choice of N experiments. Set your preferred number of experiments.
-                </li>
-                <li>
-                    <span class="step-title">Step 4: Generate & Export</span>
-                    Click <b>"Create table of experiments"</b>. Review the suggested matrix and click <b>"Export CSV"</b>. The app will calculate quality metrics:
-                    <ul style="margin-top: 0.5rem; margin-bottom: 0;">
-                        <li><b>Orthogonality:</b> How independent the features are from each other (closer to 100% is better).</li>
-                        <li><b>D-Efficiency:</b> The overall statistical efficiency of the parameter space coverage.</li>
-                        <li><b>Resolution:</b> Indicates what types of interaction and quadratic effects can be safely estimated without confounding.</li>
-                        <li><b>Curvature:</b> Whether the design permits modeling of non-linear (curved) responses.</li>
-                    </ul>
-                </li>
-            </ol>
-        </section>
-
-        <section class="guide-section" id="bo">
-            <h2>2. Bayesian Optimization (BO) <span class="badge">OPTIMIZATION</span></h2>
-            <p>The "brain" of the app. It analyzes your current data and recommends the next best settings to reach your goals.</p>
-            
-            <h3>Step-by-Step Instructions</h3>
-            <ol>
-                <li>
-                    <span class="step-title">Step 1: Load your Data</span>
-                    Drag and drop your experimental CSV into the upload zone. Ensure your results are filled in the spreadsheet before uploading.
-                </li>
-                <li>
-                    <span class="step-title">Step 2: Configure Goals</span>
-                    In the <b>Objectives</b> tab, tell the AI what to do for each column: <b>Maximize</b>, <b>Minimize</b>, or hit a specific <b>Target</b>. Click the "Include" checkboxes for the goals you want to focus on now.
-                </li>
-                <li>
-                    <span class="step-title">Step 3: Review Pareto Trade-offs</span>
-                    Look at the <b>Pareto Front</b> chart. Orange markers show experiments that achieve the best balance of all your objectives simultaneously.
-                    <div class="info-box" style="margin: 0.5rem 0 1rem;">
-                        <b>Note:</b> The Pareto plot displays <b>raw unweighted data</b>. Even if objectives have different importance, the chart shows the physical units of your measurements to keep the visualization clear and grounded in reality.
+                    <div class="wf-card">
+                        <div class="wf-num" style="background:#f59e0b;">↓</div>
+                        <p style="font-size: 0.85rem; margin:0; color: var(--text-secondary);">Run experiments in the lab, fill in the results</p>
                     </div>
-                </li>
-                <li>
-                    <span class="step-title">Step 4: Run the Optimizer</span>
-                    Click <b>"Run Bayesian Optimization"</b>. The AI will use GPU acceleration (if available) to simulate thousands of possibilities and pick the top recommendations based on your configurations.
-                    <h4 style="margin-top: 1rem; color: var(--text-primary);">Configuring BO Tweaks</h4>
-                    <ul style="margin-top: 0.5rem; margin-bottom: 0;">
-                        <li><b>Batch Size:</b> How many new experiments the AI should propose for your next lab campaign.</li>
-                        <li><b>Optimization Strategy:</b>
-                            <ul style="margin-top: 5px; margin-bottom: 5px;">
-                                <li><b>Gradient-based (Default):</b> Fast and precise for continuous parameters.</li>
-                                <li><b>Exhaustive Grid (EDBO+):</b> Tests every possible combination of a defined grid. Ideal for highly discrete spaces or when you want to "snap" to specific equipment settings.</li>
-                            </ul>
-                        </li>
-                        <li><b>Acquisition Function:</b> The strategy the AI uses to score candidates (e.g., LogEI for confident improvements, or qUCB for balanced exploration).</li>
-                        <li><b>Adaptive Multi-Objective Strategy:</b>
-                            <ul style="margin-top: 5px; margin-bottom: 5px;">
-                                <li><b>Discovery Mode:</b> Active when all objectives have equal importance (e.g., 50/50). Uses NEHVI to find the best overall trade-offs.</li>
-                                <li><b>Priority Mode:</b> Active when you set unequal importance (e.g., 90/10). Uses Weighted Scalarized EI to strictly prioritize your "High Importance" goals.</li>
-                            </ul>
-                        </li>
-                        <li><b>Kernel:</b> The mathematical assumption about the physical surface (Matern 5/2 is standard; RBF is smoother).</li>
-                        <li><b>Exploration vs. Exploitation:</b> A slider to tell the AI whether to take risks (focus on unknown areas) or be greedy (focus near known optimal areas).</li>
-                        <li><b>Noiseless:</b> Check this only if your lab measurements have absolutely zero variance/error.</li>
-                        <li><b>Avoid Re-evaluations:</b> Prevents the AI from proposing an experiment that has the exact same parameters as one you've already done.</li>
-                    </ul>
-                </li>
-            </ol>
-            
-            <h3>The Commitment Flow (Data Management)</h3>
-            <ol>
-                <li>When the BO module suggests experiments, they appear in a green-highlighted table.</li>
-                <li>Perform those experiments in the lab and <b>type the outcomes</b> directly into the cells in that table.</li>
-                <li>Once all result boxes are filled with numbers, click <b>"Add all to Main Dataset"</b>.</li>
-                <li>This merges your new data with the old, and <b>instantly refreshes all plots</b>, ready for the next round!</li>
-            </ol>
-        </section>
+                    <div class="wf-card" style="border-color:#f59e0b;">
+                        <div class="wf-num" style="background:#f59e0b;">2</div>
+                        <h3 style="margin-top:0; color:#f59e0b;">Optimize</h3>
+                        <p style="font-size: 0.9rem; margin:0;">Upload results, run BO, get new conditions. Repeat until goals are met.</p>
+                    </div>
+                    <div class="wf-card" style="border-color:#8b5cf6;">
+                        <div class="wf-num" style="background:#8b5cf6;">3</div>
+                        <h3 style="margin-top:0; color:#8b5cf6;">Analyse</h3>
+                        <p style="font-size: 0.9rem; margin:0;">Review trends, feature impacts, and build predictive models in SA</p>
+                    </div>
+                </div>
+                <div class="info-box tip">
+                    <strong>Shortcut:</strong> Already have data? Skip straight to Step 2 (BO). You don't need to start from DoE.
+                </div>
+            </section>
 
-        <section class="guide-section" id="sa">
-            <h2>3. Statistical Analysis (SA) <span class="badge">INSIGHTS</span></h2>
-            <p>Go beyond optimization to understand <i>why</i> your experiments are behaving the way they do.</p>
-            
-            <h3>Step-by-Step Instructions</h3>
-            <ol>
-                <li>
-                    <span class="step-title">Step 1: Select Features & Targets</span>
-                    Load your data, then go to the SA module. Check the boxes for the features you want to analyze and the objectives you want to predict.
-                </li>
-                <li>
-                    <span class="step-title">Step 2: Choose your Model</span>
-                    In <b>SA Tweaks</b>, select <b>Linear Regression</b> for simple trends, or <b>Neural Network/MLP</b> if you suspect complex, non-linear interactions.
-                </li>
-                <li>
-                    <span class="step-title">Step 3: Run Analysis</span>
-                    Click <b>"Run the Statistical Analysis"</b>.
-                </li>
-                <li>
-                    <span class="step-title">Step 4: Exporting Results</span>
-                    Click the <b>"Export Analysis Report"</b> button to download a <b>fully interactive HTML dashboard</b> of your current results. This standalone file embeds all your analysis data and dynamic plots, allowing you to zoom, pan, and explore categorical interactions offline without needing the app.
-                </li>
-            </ol>
+            <section class="guide-section" id="step-plan">
+                <h2>Step 1 — Plan Your Experiments (DoE) <span class="badge">OPTIONAL</span></h2>
+                <p>Use the <strong>DoE module</strong> when starting from zero. It generates a mathematically optimal set of initial experiments that maximally cover your parameter space with the fewest runs.</p>
+                <ol class="step-list">
+                    <li>
+                        <span class="step-title">Define your input variables (Features)</span>
+                        Go to the DoE module → Features tab. Add each parameter you will vary (e.g. Temperature, Catalyst). Set the type (Continuous, Discrete, Categorical) and its range.
+                    </li>
+                    <li>
+                        <span class="step-title">Name your output variables (Objectives)</span>
+                        In the Objectives tab, add the metrics you will measure (e.g. Yield, Purity). You don't set targets here — just names.
+                    </li>
+                    <li>
+                        <span class="step-title">Choose a design model and generate</span>
+                        Pick a DoE model in Tweaks (LHS is safe for any number of variables). Click <em>Create table of experiments</em>. Review the quality metrics, then export the CSV.
+                    </li>
+                    <li>
+                        <span class="step-title">Run the experiments and fill in results</span>
+                        Perform the experiments in the lab. Open the exported CSV in Excel and fill in the measured values for each objective column. Save the file.
+                    </li>
+                </ol>
+                <div class="info-box warn">
+                    <strong>What the quality metrics mean:</strong> <em>Orthogonality</em> — how independent your features are (higher is better). <em>D-Efficiency</em> — overall coverage of the parameter space. <em>Resolution</em> — ability to distinguish interaction effects. <em>Curvature</em> — whether the design can detect non-linear responses.
+                </div>
+            </section>
 
-            <h3>Understanding the Results</h3>
-            <ul>
-                <li><b>Correlation Matrix:</b> A heatmap showing how strongly each numeric feature affects your goals.</li>
-                <li><b>Categorical Interactions:</b> Interaction matrices showing how different combinations of levels (e.g., specific catalysts at specific pressures) impact the success score.</li>
-                <li><b>Feature Impact (SHAP Analysis):</b> A dual-panel interactive plot revealing exactly how each parameter drives the outcomes.
-                    <ul style="margin-top: 5px; margin-bottom: 5px;">
-                        <li><b>Left Panel (% Impact):</b> Bar charts showing the macro-level relative importance of each variable across the whole dataset.</li>
-                        <li><b>Right Panel (SHAP Beeswarm):</b> A colored swarm of your actual experiments. Dots pushed to the right (+ SHAP) increased the objective, dots pushed to the left (- SHAP) decreased it. Red dots mean the parameter setting was high, Blue means it was low.</li>
-                    </ul>
-                </li>
-                <li><b>Estimator Tool:</b> Use the sliders at the bottom to predict What-If scenarios. The tool gives you a predicted value and a "Success Score" based on your defined targets.</li>
-            </ul>
-        <section class="guide-section" id="data">
-            <h2>4. Data Management <span class="badge">TIPS</span></h2>
-            <p>EDOS is designed to be flexible with your data, but following these best practices will ensure the best results.</p>
-            
-            <h3>Working with CSV Files</h3>
-            <ul>
-                <li><b>Formatting:</b> Use standard CSV files. The app will automatically detect your columns.</li>
-                <li><b>Categorical Data:</b> You can use text names for catalysts, solvents, or ligands. The AI handles these using advanced encoding.</li>
-                <li><b>Missing Values:</b> If you haven't performed an experiment yet, leave the objective cell empty or use "N/D". The app will ignore these rows during training.</li>
-                <li><b>Editing:</b> You can edit values directly in the app's main table. Click any cell, type the new value, and click away to save.</li>
-            </ul>
+            <section class="guide-section" id="step-bo">
+                <h2>Step 2 — Bayesian Optimization (BO) <span class="badge">CORE LOOP</span></h2>
+                <p>This is the engine of autoEDOS. After each lab campaign, upload your results and BO will propose the next best set of conditions to try. Repeat this cycle until your goals are met.</p>
+                <ol class="step-list">
+                    <li>
+                        <span class="step-title">Upload your results CSV</span>
+                        Switch to the <strong>BO module</strong>. Drag and drop your CSV (with results filled in) into the upload zone. The app will automatically detect your columns.
+                        <div class="info-box tip" style="margin-top: 0.8rem;">
+                            <strong>Cold Start:</strong> No data yet? You can upload a CSV that contains only the column header row (feature and objective names, no data rows). BO will then generate a smart set of initial conditions using space-filling sampling — no prior experiments needed.
+                        </div>
+                    </li>
+                    <li>
+                        <span class="step-title">Assign column roles (F / O)</span>
+                        In the data table header, each column has an F/O toggle. Set your input variables to <strong>F</strong> (Feature) and your measured outputs to <strong>O</strong> (Objective).
+                    </li>
+                    <li>
+                        <span class="step-title">Configure Features</span>
+                        In the Features tab, set the type and range for each feature. <em>Continuous</em> means the AI can suggest any value in the range. <em>Discrete/Categorical</em> restricts suggestions to specific values.
+                    </li>
+                    <li>
+                        <span class="step-title">Configure Objectives</span>
+                        In the Objectives tab, tell the optimizer what to do with each output: <strong>Maximize</strong>, <strong>Minimize</strong>, or hit a specific <strong>Target</strong> value. For multi-objective problems, set the relative importance of each goal using the percentage inputs.
+                    </li>
+                    <li>
+                        <span class="step-title">Run the optimizer</span>
+                        Click <em>Run Bayesian Optimization</em>. The AI fits a surrogate model (Gaussian Process) to your data, then searches for the conditions most likely to improve your objectives. Suggestions appear in a green-highlighted table.
+                    </li>
+                    <li>
+                        <span class="step-title">Fill in results and commit</span>
+                        Run the suggested experiments in the lab. Type the measured values directly into the green cells. Once all values are entered, click <em>Add all to Main Dataset</em>. The data is merged and all plots refresh.
+                    </li>
+                    <li>
+                        <span class="step-title">Repeat until done</span>
+                        Go back to Step 1 of this loop — upload the updated dataset (or just export it from the app). Each cycle, the model improves its understanding and narrows in on the optimum. Typically 3–6 cycles is sufficient.
+                    </li>
+                </ol>
+                <div class="info-box">
+                    <strong>How BO actually works:</strong> After each experiment, the Gaussian Process model updates its probabilistic map of the entire parameter space. It balances <em>exploitation</em> (testing near known good results) and <em>exploration</em> (probing uncertain regions). This is far more efficient than grid search or random testing.
+                </div>
+            </section>
 
-            <h3>Data Privacy</h3>
-            <p>All data processing happens locally on your machine or within your private Space. Your experimental data is never used to train global models or shared with third parties.</p>
-        </section>
+            <section class="guide-section" id="step-sa">
+                <h2>Step 3 — Statistical Analysis (SA) <span class="badge">INSIGHTS</span></h2>
+                <p>Once you have enough data (typically 15+ experiments), use the <strong>SA module</strong> to understand <em>why</em> the optimum exists — not just <em>where</em> it is.</p>
+                <ol class="step-list">
+                    <li>
+                        <span class="step-title">Load data and select variables</span>
+                        Upload (or keep loaded) your full dataset. In the SA module, check which features and objectives to include in the analysis.
+                    </li>
+                    <li>
+                        <span class="step-title">Choose a model and run</span>
+                        In SA Tweaks, select a model. <em>Linear Regression</em> for simple, interpretable trends. <em>Neural Network/MLP</em> for complex non-linear interactions. Click <em>Run the Statistical Analysis</em>.
+                    </li>
+                    <li>
+                        <span class="step-title">Interpret the results</span>
+                        Review the correlation matrix, SHAP importance plots, and categorical interaction charts. Use the Estimator sliders to simulate what-if scenarios and predict outcomes for any combination of conditions.
+                    </li>
+                    <li>
+                        <span class="step-title">Export your report</span>
+                        Click <em>Export Analysis Report</em> to download a fully interactive HTML dashboard that works offline — ideal for sharing with collaborators or adding to publications.
+                    </li>
+                </ol>
+            </section>
 
-        <footer style="margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border-color); text-align: center;">
+            <section class="guide-section" id="auto-mode">
+                <h2>Automation Mode <span class="badge">ADVANCED</span></h2>
+                <p>The <strong>Auto module</strong> is designed for fully automated laboratory pipelines connected to the <strong>autoEDOS-IMEX</strong> software. In this mode, experiment proposals are automatically sent to your instrument, and results are received and fed back into the next BO cycle without manual intervention.</p>
+                <ol class="step-list">
+                    <li><span class="step-title">Start autoEDOS-IMEX</span> Run the IMEX software on the local laboratory computer. Confirm the checkbox in Step 1 of the Auto module.</li>
+                    <li><span class="step-title">Choose a starting method</span> Select DoE (if starting fresh) or BO (if you have existing data). This will take you to the relevant module to configure parameters.</li>
+                    <li><span class="step-title">Configure BO setup</span> Return to Auto and confirm BO is configured. Click <em>Check BO Setup</em>.</li>
+                    <li><span class="step-title">Set stopping conditions</span> Define when the loop should stop: after a fixed number of iterations, after X iterations with no improvement, when a target value is reached (only available if all objectives are in "target" mode), or after a set time.</li>
+                    <li><span class="step-title">Launch</span> Click <em>Start Automated BO</em>. The platform will run the full cycle autonomously.</li>
+                </ol>
+            </section>
+        </div>
 
-            <p>© 2026 EDOS | Developed by Giancarlo Pascali</p>
-        </footer>
+        <!-- ========== PART 2: MODULE REFERENCE ========== -->
+        <div id="part-reference" class="part-view">
+            <header style="margin-bottom: 2rem;">
+                <h1 style="font-size: 2.5rem; margin-bottom: 0.4rem; color: var(--text-primary);">Module Reference</h1>
+                <p style="font-size: 1.1rem;">Detailed descriptions of every feature and setting in each module.</p>
+            </header>
+
+            <nav class="toc">
+                <h4 style="margin-bottom: 0.8rem;">Jump to section</h4>
+                <ul>
+                    <li><a href="#ref-doe">1. Design of Experiments (DoE)</a></li>
+                    <li><a href="#ref-bo">2. Bayesian Optimization (BO)</a></li>
+                    <li><a href="#ref-sa">3. Statistical Analysis (SA)</a></li>
+                    <li><a href="#ref-data">4. Data Management</a></li>
+                </ul>
+            </nav>
+
+            <section class="guide-section" id="ref-doe">
+                <h2>1. Design of Experiments (DoE) <span class="badge">PLANNING</span></h2>
+                <p>Use this module when starting from scratch to create a statistically sound plan for your first experiments.</p>
+                <h3>Feature Types</h3>
+                <ul>
+                    <li><strong>Continuous:</strong> Any value in a range. Format: <code>[min, max]</code></li>
+                    <li><strong>Regular:</strong> Fixed-step grid. Format: <code>[min, max]N</code> (e.g. <code>[20, 100]5</code> = 5 equally spaced points)</li>
+                    <li><strong>Discrete:</strong> Specific numeric values. Format: <code>10, 25, 50, 100</code></li>
+                    <li><strong>Categorical:</strong> Named options. Format: <code>Catalyst A, Catalyst B, Catalyst C</code></li>
+                </ul>
+                <h3>DoE Models</h3>
+                <ul>
+                    <li><strong>Latin Hypercube Sampling (LHS):</strong> Space-filling design. Works with any number of factors. Best for flexibility and maximum coverage with a free choice of N experiments.</li>
+                    <li><strong>Box-Behnken:</strong> Efficient for 3–7 factors. Excellent for quadratic surface modelling.</li>
+                    <li><strong>Definitive Screening (DSP):</strong> Very efficient for many factors. Can detect main effects and some interactions.</li>
+                    <li><strong>Full Factorial:</strong> Tests every combination. Only practical for few factors with few levels.</li>
+                    <li><strong>Plackett-Burman:</strong> Screening design. Good for identifying the most important factors quickly.</li>
+                </ul>
+                <h3>Quality Metrics</h3>
+                <ul>
+                    <li><strong>Orthogonality:</strong> How independent the features are from each other (closer to 100% is better).</li>
+                    <li><strong>D-Efficiency:</strong> Overall statistical efficiency of the space coverage.</li>
+                    <li><strong>Resolution:</strong> Indicates which interaction and quadratic effects can be estimated without confounding.</li>
+                    <li><strong>Curvature:</strong> Whether the design permits modelling of non-linear responses.</li>
+                </ul>
+            </section>
+
+            <section class="guide-section" id="ref-bo">
+                <h2>2. Bayesian Optimization (BO) <span class="badge">OPTIMIZATION</span></h2>
+                <p>The "brain" of the app. It analyzes your current data and recommends the next best settings to reach your goals.</p>
+
+                <div class="info-box tip">
+                    <strong>Cold Start:</strong> You don't need prior data to use the BO module. Upload a CSV that contains only the header row (column names separated by commas, no data). The optimizer will generate a smart initial set of experiments using Sobol space-filling sampling — a statistically superior alternative to random guessing.
+                </div>
+
+                <h3>Objective Modes</h3>
+                <ul>
+                    <li><strong>Maximize:</strong> Push the objective as high as possible (e.g. yield, conversion).</li>
+                    <li><strong>Minimize:</strong> Push the objective as low as possible (e.g. cost, byproduct).</li>
+                    <li><strong>Target:</strong> Hit a specific value (e.g. pH = 7.0, purity = 98%). The optimizer penalizes deviations in either direction.</li>
+                </ul>
+                <h3>Multi-Objective Strategy</h3>
+                <ul>
+                    <li><strong>Discovery Mode (equal importance):</strong> Uses NEHVI to explore the full Pareto front — all trade-off solutions between objectives.</li>
+                    <li><strong>Priority Mode (unequal importance):</strong> Uses Scalarized EI to strictly prioritize the high-importance objectives.</li>
+                </ul>
+                <h3>BO Tweaks</h3>
+                <ul>
+                    <li><strong>Batch Size:</strong> How many new experiments to propose per cycle.</li>
+                    <li><strong>Optimization Strategy:</strong> <em>Gradient-based</em> (default, precise for continuous) or <em>Exhaustive Grid</em> (tests all defined combinations, ideal for fully discrete spaces).</li>
+                    <li><strong>Acquisition Function:</strong> LogEI (confident improvements), qUCB (balanced exploration).</li>
+                    <li><strong>Kernel:</strong> Mathematical assumption about the response surface. Matern 5/2 is standard. RBF is smoother.</li>
+                    <li><strong>Exploration vs. Exploitation slider:</strong> Controls risk appetite. Left = exploit known good areas. Right = explore unknown regions.</li>
+                    <li><strong>Noiseless:</strong> Enable only if your measurements have zero variance/error.</li>
+                    <li><strong>Avoid Re-evaluations:</strong> Prevents suggesting conditions already in your dataset.</li>
+                </ul>
+                <h3>The Pareto Front</h3>
+                <p>The Pareto chart shows experiments that achieve the best balance of all objectives simultaneously (orange markers). These are the "non-dominated" solutions — no other experiment beats them on all objectives at once. The chart always displays raw, unweighted values to keep visualisation grounded in physical reality.</p>
+            </section>
+
+            <section class="guide-section" id="ref-sa">
+                <h2>3. Statistical Analysis (SA) <span class="badge">INSIGHTS</span></h2>
+                <p>Go beyond optimization to understand <i>why</i> your experiments behave the way they do.</p>
+                <h3>Models</h3>
+                <ul>
+                    <li><strong>Linear Regression:</strong> Fast, interpretable. Use for simple trends and few interactions.</li>
+                    <li><strong>Neural Network/MLP:</strong> Captures complex non-linear interactions. Requires more data (20+ points).</li>
+                </ul>
+                <h3>Understanding the Results</h3>
+                <ul>
+                    <li><strong>Correlation Matrix:</strong> Heatmap of how strongly each numeric feature affects your goals.</li>
+                    <li><strong>Categorical Interactions:</strong> Shows how combinations of categorical levels impact the success score.</li>
+                    <li><strong>Feature Impact (SHAP):</strong> A dual-panel plot.
+                        <ul style="margin-top: 5px; margin-bottom: 5px;">
+                            <li><em>Left panel (% Impact):</em> Relative importance of each variable across the whole dataset.</li>
+                            <li><em>Right panel (SHAP Beeswarm):</em> Dots pushed right = increased the objective. Dots pushed left = decreased it. Red = high parameter value, Blue = low.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Estimator Tool:</strong> Sliders for predicting what-if scenarios. Shows predicted value and a Success Score.</li>
+                </ul>
+            </section>
+
+            <section class="guide-section" id="ref-data">
+                <h2>4. Data Management <span class="badge">TIPS</span></h2>
+                <h3>CSV Format</h3>
+                <ul>
+                    <li><strong>Standard CSV:</strong> Columns separated by commas. The first row must be the header (column names).</li>
+                    <li><strong>Column naming:</strong> Use descriptive names. Avoid special characters.</li>
+                    <li><strong>Missing values:</strong> Leave objective cells empty or use "N/D" for experiments not yet run. The optimizer ignores these rows during training but preserves them in the dataset.</li>
+                    <li><strong>Cold start CSV:</strong> A CSV with only the header row (no data) is valid. The BO optimizer will use it to generate an initial set of experiments from scratch.</li>
+                </ul>
+                <h3>In-App Editing</h3>
+                <p>Click any cell in the main data table to edit its value. Click away to save. Useful for correcting typos or entering results from the lab directly into the app.</p>
+                <h3>Column Role Assignment</h3>
+                <p>Use the F/O toggle in each column header to designate columns as Features (inputs) or Objectives (outputs). This assignment is remembered across all modules.</p>
+                <h3>Data Privacy</h3>
+                <p>All data processing happens locally on your machine or within your private Hugging Face Space. Your experimental data is never shared with third parties or used to train global models.</p>
+            </section>
+        </div>
     </div>
 
     <button id="scrollToTop" class="back-to-top">↑</button>
 
     <script>
-        const searchInput = document.getElementById('guide-search');
-        const sections = document.querySelectorAll('.guide-section');
-        const scrollBtn = document.getElementById('scrollToTop');
-
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            sections.forEach(section => {
-                const text = section.innerText.toLowerCase();
-                section.classList.toggle('hidden', query !== '' && !text.includes(query));
+        // Tab switching
+        document.querySelectorAll('.part-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.part-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.part-view').forEach(v => v.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('part-' + tab.dataset.part).classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         });
 
-        window.onscroll = () => {
-            scrollBtn.style.display = (window.scrollY > 200) ? "flex" : "none";
-        };
-        scrollBtn.onclick = () => window.scrollTo({top: 0, behavior: 'smooth'});
+        // Search
+        const searchInput = document.getElementById('guide-search');
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            if (!query) {
+                document.querySelectorAll('.guide-section').forEach(s => s.classList.remove('hidden'));
+                return;
+            }
+            // Search across both parts
+            document.querySelectorAll('.part-view').forEach(part => {
+                part.classList.add('active');
+            });
+            document.querySelectorAll('.part-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.guide-section').forEach(section => {
+                section.classList.toggle('hidden', !section.innerText.toLowerCase().includes(query));
+            });
+        });
+        searchInput.addEventListener('input', e => {
+            if (!e.target.value.trim()) {
+                const active = document.querySelector('.part-tab.active') || document.querySelectorAll('.part-tab')[0];
+                active.classList.add('active');
+            }
+        });
+
+        // Scroll to top
+        const scrollBtn = document.getElementById('scrollToTop');
+        window.onscroll = () => { scrollBtn.style.display = window.scrollY > 300 ? 'flex' : 'none'; };
+        scrollBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
     </script>
     <script data-goatcounter="https://edos-app.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
