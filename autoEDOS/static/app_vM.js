@@ -23,6 +23,8 @@ let autoStopCondition = { type: '', value: '' };
 let autoCurrentIteration = 0;
 let autoStartTime = null;
 let autoMaxTarget = 0; 
+let autoBestScore = -Infinity;
+let autoNoImprovementCount = 0;
 
 // UI References for steps
 const autoSteps = {
@@ -403,6 +405,7 @@ window.toggleColumnRole = (colName) => {
     });
 
     rebalanceObjectiveConfigs();
+    checkTargetStoppingConditionAvailability();
     renderMainTable();
     renderSetup();
     if (currentModule === 'bo') renderTrendPlot();
@@ -523,6 +526,7 @@ function renderSetup() {
     if (currentModule === 'doe') renderDoESetup();
     else if (currentModule === 'bo') renderBOSetup();
     else if (currentModule === 'sa') renderSASetup();
+    checkTargetStoppingConditionAvailability();
 }
 
 function renderDoESetup() {
@@ -675,6 +679,7 @@ window.syncObjectiveConfig = (col, sourceModule, field) => {
 
     renderSetup();
     updateAcqSelectForMultiObj();
+    checkTargetStoppingConditionAvailability();
     if (currentModule === 'bo') renderTrendPlot();
 };
 
@@ -777,6 +782,9 @@ function initAutoModule() {
             } else if (type === 'target') {
                 label.textContent = '% Target (%)';
                 input.placeholder = '0-100';
+            } else if (type === 'improvement') {
+                label.textContent = 'No improvement for (iters)';
+                input.placeholder = 'e.g., 3';
             } else if (type === 'time') {
                 label.textContent = 'Maximum Time';
                 input.placeholder = 'hh:mm';
@@ -815,6 +823,30 @@ function initAutoModule() {
     safeAddListener('execute-autodoe-btn', 'click', startAutoDoE);
     safeAddListener('execute-autobo-btn', 'click', startAutoBO);
     safeAddListener('reset-auto-btn', 'click', resetAutoApp);
+}
+
+function checkTargetStoppingConditionAvailability() {
+    const select = document.getElementById('auto-stop-type');
+    if (!select) return;
+    const targetOption = select.querySelector('option[value="target"]');
+    if (!targetOption) return;
+
+    const activeObjs = currentColumns.filter(c => columnRoles[c] === 'objective');
+    const includedObjs = activeObjs.filter(c => objectiveConfigs[c] && objectiveConfigs[c].included);
+    
+    // Check if ALL included objectives are set to 'target'
+    const allTarget = includedObjs.length > 0 && includedObjs.every(c => objectiveConfigs[c].type === 'target');
+
+    if (!allTarget) {
+        targetOption.disabled = true;
+        if (select.value === 'target') {
+            select.value = '';
+            document.getElementById('auto-stop-value-container').classList.add('hidden');
+            document.getElementById('check-stopping-cond').checked = false;
+        }
+    } else {
+        targetOption.disabled = false;
+    }
 }
 
 function resetAutoApp() {
@@ -920,9 +952,12 @@ async function startAutoBO() {
     autoModeActive = true;
     autoCurrentIteration = 0;
     autoStartTime = new Date();
+    autoBestScore = -Infinity;
+    autoNoImprovementCount = 0;
     
     runBOCycle();
 }
+
 
 async function runBOCycle() {
     if (!autoModeActive) return;
@@ -999,6 +1034,38 @@ function shouldStopAuto() {
             if (val > maxVal) maxVal = val;
         });
         return maxVal >= parseFloat(autoStopCondition.value);
+    }
+    if (autoStopCondition.type === 'improvement') {
+        // Calculate current best score
+        let currentBest = -Infinity;
+        const objCols = currentColumns.filter(c => columnRoles[c] === 'objective');
+        const included = objCols.filter(c => objectiveConfigs[c] && objectiveConfigs[c].included);
+        
+        if (included.length === 0) return false;
+
+        currentData.forEach(row => {
+            let score = 0;
+            included.forEach(col => {
+                const idx = currentColumns.indexOf(col);
+                const val = parseFloat(row[idx]);
+                const cfg = objectiveConfigs[col];
+                let s = 0;
+                if (cfg.type === 'maximize') s = val;
+                else if (cfg.type === 'minimize') s = -val;
+                else if (cfg.type === 'target') s = -Math.abs(val - parseFloat(cfg.target));
+                score += s * (parseFloat(cfg.importance) / 100);
+            });
+            if (score > currentBest) currentBest = score;
+        });
+
+        if (currentBest > autoBestScore + 1e-6) {
+            autoBestScore = currentBest;
+            autoNoImprovementCount = 0;
+        } else {
+            autoNoImprovementCount++;
+        }
+
+        return autoNoImprovementCount >= parseInt(autoStopCondition.value);
     }
     if (autoStopCondition.type === 'time') {
         const parts = autoStopCondition.value.split(':').map(Number);
