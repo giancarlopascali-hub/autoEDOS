@@ -186,12 +186,12 @@
 
                 <div class="info-box" style="margin-bottom: 1.5rem;">
                     <strong>What is autoEDOS-IMEX?</strong><br><br>
-                    autoEDOS-IMEX (Instrument Management and EXchange) is a companion software that runs on the local laboratory computer and acts as a bridge between autoEDOS and your physical instruments. It:<br><br>
+                    autoEDOS-IMEX (<strong>IM</strong>port <strong>EX</strong>port) is a companion software that runs on the local laboratory computer and acts as a bridge between autoEDOS and your physical instruments. It handles all data exchange exclusively in the form of <strong>.csv files</strong>, supporting the following communication channels:<br><br>
                     <ul style="margin: 0.5rem 0 0;">
-                        <li>Receives the experiment proposal (the suggested conditions table) from autoEDOS and translates it into instrument-readable commands.</li>
-                        <li>Queues and dispatches the experiment sequence to the connected instrument(s) — e.g. a flow chemistry platform, a robotic liquid handler, or any IMEX-compatible system.</li>
-                        <li>Monitors the run in real time, collects the raw output data, and formats it as results.</li>
-                        <li>Pushes the results back to autoEDOS automatically, triggering the next optimization cycle — all without manual file handling.</li>
+                        <li><strong>Local folders:</strong> Watches a designated folder for incoming result files and writes proposal files for the instrument software to pick up.</li>
+                        <li><strong>Serial / COM port:</strong> Communicates directly with instruments connected via RS-232 or USB-serial adapters.</li>
+                        <li><strong>Network (TCP/UDP):</strong> Sends and receives CSV data over a local network or internet connection — useful for remote instruments or cloud-connected platforms.</li>
+                        <li><strong>USB:</strong> Direct USB data exchange with compatible instruments.</li>
                     </ul>
                     <br>In short: IMEX is what makes the loop <em>fully closed</em>. Without it, you manage experiment dispatch and result upload manually. With it, the entire DoE → Run → Optimize cycle runs hands-free.
                 </div>
