@@ -648,28 +648,26 @@ window.syncObjectiveConfig = (col, sourceModule, field) => {
     const rolePrefix = sourceModule === 'bo' ? 'bo-o' : 'sa-o';
     const row = document.querySelector(`.${rolePrefix}-type[data-col="${col}"]`).closest('tr');
     
-    // 1. Sync DOM -> Config FIRST (so rebalance sees correct 'included' flags)
+    // 1. Sync ALL DOM states to Config to ensure consistency
     document.querySelectorAll(`.${rolePrefix}-include`).forEach(cb => {
         const c = cb.dataset.col;
         const r = cb.closest('tr');
         if (objectiveConfigs[c]) {
             objectiveConfigs[c].type = r.querySelector(`.${rolePrefix}-type`).value;
             objectiveConfigs[c].target = r.querySelector(`.${rolePrefix}-target`).value;
-            // Only sync importance if we aren't about to auto-rebalance it from scratch
-            if (field === 'importance') {
+            if (field === 'importance' && c === col) {
                 objectiveConfigs[c].importance = r.querySelector(`.${rolePrefix}-importance`).value;
             }
             objectiveConfigs[c].included = cb.checked;
         }
     });
 
-    // 2. Perform Rebalance logic based on the updated Config
+    // 2. Perform Rebalance logic
     if (field === 'importance') {
         const selector = `.${rolePrefix}-importance`;
         const val = row.querySelector(selector).value;
         rebalanceRemaining(col, val, selector);
         
-        // After DOM-based rebalanceRemaining, sync the derived values back to config
         document.querySelectorAll(selector).forEach(el => {
             if (objectiveConfigs[el.dataset.col]) objectiveConfigs[el.dataset.col].importance = el.value;
         });
@@ -677,7 +675,14 @@ window.syncObjectiveConfig = (col, sourceModule, field) => {
         rebalanceObjectiveConfigs();
     }
 
-    renderSetup();
+    // 3. UI Update (Partial or Full)
+    if (field === 'type') {
+        // Just toggle the target input without full re-render to avoid "stuck" dropdowns
+        toggleRowTarget(row.querySelector(`.${rolePrefix}-type`));
+    } else {
+        renderSetup();
+    }
+    
     updateAcqSelectForMultiObj();
     checkTargetStoppingConditionAvailability();
     if (currentModule === 'bo') renderTrendPlot();
@@ -839,6 +844,7 @@ function checkTargetStoppingConditionAvailability() {
 
     if (!allTarget) {
         targetOption.disabled = true;
+        targetOption.textContent = '% Target reached (Needs all objectives at "target")';
         if (select.value === 'target') {
             select.value = '';
             document.getElementById('auto-stop-value-container').classList.add('hidden');
@@ -846,6 +852,7 @@ function checkTargetStoppingConditionAvailability() {
         }
     } else {
         targetOption.disabled = false;
+        targetOption.textContent = '% Target reached';
     }
 }
 
