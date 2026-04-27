@@ -38,6 +38,12 @@ jobs:
           
           # Commit and push
           cd hf_repo
+          # HF requires LFS for binaries
+          git lfs install
+          git lfs track "*.png"
+          git lfs track "*.ico"
+          git lfs track "*.jpg"
           git add .
-          git commit -m "Sync from GitHub (Bare Essentials Only)" || echo "No changes to commit"
+          git commit -m "Sync from GitHub (LFS optimized)" || echo "No changes to commit"
           git push origin main
+
