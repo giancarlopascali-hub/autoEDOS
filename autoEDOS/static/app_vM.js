@@ -1197,6 +1197,16 @@ function applyAutoResults(results) {
         saFeatureConfigs[f.name] = { type: f.type, included: true };
     });
 
+    currentDoEObjectives.forEach(o => {
+        objectiveConfigs[o.name] = {
+            name: o.name,
+            type: o.type,
+            target: o.target,
+            importance: o.importance,
+            included: true
+        };
+    });
+
     // Determine Mapping
     const csvKeys = Object.keys(resultRows[0] || {});
     const map = getObjectiveMapping(objCols, csvKeys);
@@ -1394,8 +1404,14 @@ function initButtons() {
             }
         });
         currentDoEObjectives.forEach(o => {
-            if (currentColumns.includes(o.name) && !objectiveConfigs[o.name]) {
-                objectiveConfigs[o.name] = { name: o.name, type: 'maximize', target: '', importance: (100/objs.length).toFixed(1), included: true };
+            if (currentColumns.includes(o.name)) {
+                objectiveConfigs[o.name] = { 
+                    name: o.name, 
+                    type: o.type || 'maximize', 
+                    target: o.target || '', 
+                    importance: o.importance || (100/objs.length).toFixed(1), 
+                    included: true 
+                };
             }
         });
 
@@ -1770,7 +1786,10 @@ async function runDoE() {
 
     // Collect objectives for column rendering
     currentDoEObjectives = Array.from(document.querySelectorAll('#doe-objectives-list tr')).map(tr => ({
-        name: tr.querySelector('.doe-o-name').value
+        name: tr.querySelector('.doe-o-name').value,
+        type: tr.querySelector('.doe-o-type').value,
+        target: tr.querySelector('.doe-o-target').value,
+        importance: tr.querySelector('.doe-o-importance').value
     })).filter(o => o.name.trim() !== "");
 
     const tweaks = {
